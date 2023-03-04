@@ -41,6 +41,13 @@ cv::Mat undist_map1_, undist_map2_ , K_;
 
 ros::Publisher pub_point_line;
 sensor_msgs::PointCloudConstPtr linefeature;
+
+void project(cv::Point2f& pt, cv::Mat const& K)
+{
+    pt.x = K.at<float>(0, 0) * pt.x + K.at<float>(0, 2);
+    pt.y = K.at<float>(1, 1) * pt.y + K.at<float>(1, 2);
+}
+
 void callback(const sensor_msgs::PointCloudConstPtr &point_feature_msg,
               const sensor_msgs::PointCloudConstPtr &line_feature_msg,
               const sensor_msgs::ImageConstPtr& img_msg) 
@@ -61,8 +68,11 @@ void callback(const sensor_msgs::PointCloudConstPtr &point_feature_msg,
     cv::remap(img1, show_img, undist_map1_, undist_map2_, CV_INTER_LINEAR);
     for(int i=0; i<line_feature_msg->points.size(); i++)
     {
-        cv::Point startPoint = cv::Point(line_feature_msg->channels[3].values[i], line_feature_msg->channels[4].values[i]);
-        cv::Point endPoint = cv::Point(line_feature_msg->channels[5].values[i], line_feature_msg->channels[6].values[i]);
+        cv::Point2f startPoint = cv::Point2f(line_feature_msg->points[i].x, line_feature_msg->points[i].y);
+        project(startPoint, K_);
+        cv::Point2f endPoint = cv::Point2f(line_feature_msg->channels[1].values[i], line_feature_msg->channels[2].values[i]);
+        project(endPoint, K_);
+
         cv::line(show_img, startPoint, endPoint, cv::Scalar(0, 0, 255),2 ,8);
     }
 
@@ -73,10 +83,13 @@ void callback(const sensor_msgs::PointCloudConstPtr &point_feature_msg,
     // cv::waitKey(5);
 }
 
+
+
 int main(int argc, char **argv) {
 
-  m_camera = camodocal::CameraFactory::instance()->generateCameraFromYamlFile("/../../config/euroc/euroc_config_fix_extrinsic.yaml");
-  K_ = m_camera->initUndistortRectifyMap(undist_map1_,undist_map2_);  
+  m_camera = camodocal::CameraFactory::instance()->generateCameraFromYamlFile("/home/yamabuki/10GDisk/vins/src/PL-VINS/config/euroc/euroc_config_fix_extrinsic.yaml");
+  std::cout<<"------------------------------------------"<<std::endl;
+  K_ = m_camera->initUndistortRectifyMap(undist_map1_,undist_map2_);
 
   ros::init(argc, argv, "sync_control_node"); 
   ros::NodeHandle nh;                      

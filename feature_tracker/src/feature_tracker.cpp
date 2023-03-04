@@ -260,7 +260,7 @@ void FeatureTracker::showUndistortion()
     cv::Mat undist_map1_, undist_map2_;
 
     m_camera->initUndistortRectifyMap(undist_map1_,undist_map2_);
-    cv::remap(cur_img, undistortedImg, undist_map1_, undist_map2_, CV_INTER_LINEAR);
+    cv::remap(cur_img, undistortedImg, undist_map1_, undist_map2_, cv::INTER_LINEAR);
 
     cv::imshow("undist", undistortedImg);
     cv::waitKey(1);

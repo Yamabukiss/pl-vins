@@ -5,6 +5,8 @@ set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
 
+find_package(OpenCV 4.5.2 REQUIRED)
+
 find_package(catkin REQUIRED COMPONENTS
     roscpp
     std_msgs
@@ -13,8 +15,8 @@ find_package(catkin REQUIRED COMPONENTS
     camera_model
     message_filters
     )
-Set(OpenCV_DIR "/home/healer/Downloads/opencv3.2/opencv-3.2.0/build") # important find opencv version
-find_package(OpenCV 3.2 QUIET)
+Set(OpenCV_DIR "/home/yamabuki/Downloads/opencv-4.5.2/build") # important find opencv version
+#Set(OpenCV_DIR "/home/yamabuki/Downloads/opencv-4.5.2/build") # important find opencv version
 
 catkin_package()
 
@@ -27,7 +29,7 @@ find_package(Eigen3  REQUIRED)
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
-  /home/healer/catkin_PLVINS/src/PL-VINS/feature_tracker/src/line_descriptor/include # find LSD 
+        /home/yamabuki/10GDisk/vins/src/PL-VINS/feature_tracker/src/line_descriptor/include # find LSD
 ) 
 
 add_executable(feature_tracker
@@ -53,10 +55,12 @@ add_executable(LineFeature_tracker
     src/line_descriptor/src/LSDDetector_custom.cpp
     src/line_descriptor/src/precomp_custom.hpp
     src/line_descriptor/src/types_custom.hpp
+        src/lsd.cpp
+        src/precomp.hpp
 )
 # /home/healer/PL-VINS/PLVINS/PL-VINS/feature_tracker
 target_link_libraries(LineFeature_tracker 
 ${catkin_LIBRARIES} 
 ${OpenCV_LIBS}
-/home/healer/catkin_PLVINS/src/PL-VINS/feature_tracker/src/line_descriptor/lib/liblinedesc.so  # line feature
+        /home/yamabuki/10GDisk/vins/src/PL-VINS/feature_tracker/src/line_descriptor/lib  # line feature
 )

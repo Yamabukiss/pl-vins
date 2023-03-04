@@ -72,5 +72,4 @@
 #include "types_custom.hpp"
 
 #include "line_descriptor_custom.hpp"
-
 #endif

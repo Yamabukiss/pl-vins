@@ -6,7 +6,7 @@ if(WIN32 AND NOT CYGWIN)
 else()
     set(HOME $ENV{HOME})
 endif()
-
+set(CMAKE_CXX_STANDARD 14)
 find_package(catkin REQUIRED COMPONENTS
  roscpp
  rospy
